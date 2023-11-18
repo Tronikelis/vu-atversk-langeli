@@ -149,12 +149,13 @@ int main() {
                         's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
     int HOW_MANY_CHARACTERS;
-    printf("How many characters do you want to play? [0-26]: ");
+    printf("How many characters do you want to play? [0-%d]: ",
+           CHARACTERS_LENGTH);
     scanf("%i", &HOW_MANY_CHARACTERS);
     HOW_MANY_CHARACTERS = clamp_int(HOW_MANY_CHARACTERS, 0, 26);
 
     int TRIES_LEFT;
-    printf("\nHow many tries do you want to have? [1-2147483647]: ");
+    printf("\nHow many tries do you want to have? [1-%d]: ", INT_MAX);
     scanf("%i", &TRIES_LEFT);
     TRIES_LEFT = clamp_int(TRIES_LEFT, 1, INT_MAX);
 
