@@ -149,10 +149,10 @@ int main() {
                         's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
     int HOW_MANY_CHARACTERS;
-    printf("How many characters do you want to play? [0-%d]: ",
+    printf("How many characters do you want to play? [2-%d]: ",
            CHARACTERS_LENGTH);
     scanf("%i", &HOW_MANY_CHARACTERS);
-    HOW_MANY_CHARACTERS = clamp_int(HOW_MANY_CHARACTERS, 0, 26);
+    HOW_MANY_CHARACTERS = clamp_int(HOW_MANY_CHARACTERS, 2, 26);
 
     int TRIES_LEFT;
     printf("\nHow many tries do you want to have? [1-%d]: ", INT_MAX);
@@ -173,5 +173,8 @@ int main() {
 
     HiddenChar_shuffle_arr(hidden_char_arr, arr_length);
 
-    return game_loop(hidden_char_arr, arr_length, TRIES_LEFT);
+    int exit_code = game_loop(hidden_char_arr, arr_length, TRIES_LEFT);
+    free(hidden_char_arr);
+
+    return exit_code;
 }
