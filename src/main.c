@@ -111,6 +111,16 @@ int game_loop(struct HiddenChar* characters, int character_len,
         printf("your choice: ");
 
         if (game.state == FIRST_PICK) {
+            // when both are picked, let the player check his results until the
+            // first pick again
+            if (first_pick != -1 && second_pick != -1) {
+                if (game.characters[first_pick].character !=
+                    game.characters[second_pick].character) {
+                    game.characters[first_pick].picked = false;
+                    game.characters[second_pick].picked = false;
+                }
+            }
+
             scanf("%i", &first_pick);
             first_pick = clamp_int(first_pick, 0, character_len - 1);
 
@@ -127,12 +137,6 @@ int game_loop(struct HiddenChar* characters, int character_len,
             game.state = FIRST_PICK;
             game.characters[second_pick].picked = true;
             game.tries_left--;
-
-            if (game.characters[first_pick].character !=
-                game.characters[second_pick].character) {
-                game.characters[first_pick].picked = false;
-                game.characters[second_pick].picked = false;
-            }
 
             continue;
         }
