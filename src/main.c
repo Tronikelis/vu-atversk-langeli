@@ -99,11 +99,11 @@ int main() {
 
     char filename[100];
     printf("File name to read: ");
-    scanf("%s",filename);
+    scanf("%s", filename);
 
     FILE *file= fopen(filename,"r");
 
-    if (file=NULL)
+    if (file==NULL)
     {
         printf("Error opening file.\n");
         return 1;
@@ -111,14 +111,7 @@ int main() {
     int HOW_MANY_CHARACTERS;
     int TRIES_LEFT;
 
-    if(fscanf(file,"%d", &HOW_MANY_CHARACTERS)==1)
-    {
-        printf("Error reading the value from file.\n");
-        fclose(file);
-        return 1;
-    }
-
-    if(fscanf(file,"%d", &TRIES_LEFT)==1)
+    if(fscanf(file, "%d %d", &HOW_MANY_CHARACTERS, &TRIES_LEFT)!=2)
     {
         printf("Error reading the value from file.\n");
         fclose(file);
@@ -126,6 +119,10 @@ int main() {
     }
 
     fclose(file);
+
+    // Print the read values for verification
+    printf("Read HOW_MANY_CHARACTERS: %d\n", HOW_MANY_CHARACTERS);
+    printf("Read TRIES_LEFT: %d\n", TRIES_LEFT);
 
     HOW_MANY_CHARACTERS = clamp_int(HOW_MANY_CHARACTERS, 2, 26);
     TRIES_LEFT = clamp_int(TRIES_LEFT, 1, INT_MAX);
