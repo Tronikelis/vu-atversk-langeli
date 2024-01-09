@@ -101,18 +101,17 @@ int main() {
     printf("File name to read: ");
     scanf("%s", filename);
 
-    FILE *file= fopen(filename,"r");
+    FILE* file = fopen(filename, "r");
 
-    if (file==NULL)
-    {
+    if (file == NULL) {
         printf("Error opening file.\n");
         return 1;
     }
+
     int HOW_MANY_CHARACTERS;
     int TRIES_LEFT;
 
-    if(fscanf(file, "%d %d", &HOW_MANY_CHARACTERS, &TRIES_LEFT)!=2)
-    {
+    if (fscanf(file, "%d %d", &HOW_MANY_CHARACTERS, &TRIES_LEFT) != 2) {
         printf("Error reading the value from file.\n");
         fclose(file);
         return 1;
