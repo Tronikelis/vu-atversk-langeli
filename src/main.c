@@ -97,15 +97,37 @@ int main() {
                         'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                         's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
-    int HOW_MANY_CHARACTERS;
-    printf("How many characters do you want to play? [2-%d]: ",
-           CHARACTERS_LENGTH);
-    scanf("%i", &HOW_MANY_CHARACTERS);
-    HOW_MANY_CHARACTERS = clamp_int(HOW_MANY_CHARACTERS, 2, 26);
+    char filename[100];
+    printf("File name to read: ");
+    scanf("%s",filename);
 
+    FILE *file= fopen(filename,"r");
+
+    if (file=NULL)
+    {
+        printf("Error opening file.\n");
+        return 1;
+    }
+    int HOW_MANY_CHARACTERS;
     int TRIES_LEFT;
-    printf("\nHow many tries do you want to have? [1-%d]: ", INT_MAX);
-    scanf("%i", &TRIES_LEFT);
+
+    if(fscanf(file,"%d", &HOW_MANY_CHARACTERS)==1)
+    {
+        printf("Error reading the value from file.\n");
+        fclose(file);
+        return 1;
+    }
+
+    if(fscanf(file,"%d", &TRIES_LEFT)==1)
+    {
+        printf("Error reading the value from file.\n");
+        fclose(file);
+        return 1;
+    }
+
+    fclose(file);
+
+    HOW_MANY_CHARACTERS = clamp_int(HOW_MANY_CHARACTERS, 2, 26);
     TRIES_LEFT = clamp_int(TRIES_LEFT, 1, INT_MAX);
 
     int arr_length = HOW_MANY_CHARACTERS * 2;
