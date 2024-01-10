@@ -51,8 +51,12 @@ void readGameState(struct Game* game) {
 
     int READ_COUNT = 1 + game->character_len;
 
+    // this is the allocated pointer, saving it here because it gets overriden
+    // by next fread call
+    struct HiddenChar* characters = game->characters;
+
     int gameFileRead = fread(game, sizeof(struct Game), 1, files.gameFile);
-    int charsFileRead = fread((*game).characters, sizeof(struct HiddenChar),
+    int charsFileRead = fread(characters, sizeof(struct HiddenChar),
                               game->character_len, files.charsFile);
 
     if (gameFileRead + charsFileRead != READ_COUNT) {
@@ -62,6 +66,8 @@ void readGameState(struct Game* game) {
         fclose(files.charsFile);
         exit(1);
     }
+
+    game->characters = characters;
 
     fclose(files.gameFile);
     fclose(files.charsFile);
