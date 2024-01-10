@@ -17,8 +17,6 @@ int game_loop(struct Game game) {
         clear_terminal();
         saveGameState(game);
 
-        printf("%d", game.tries_left);
-
         if (game.tries_left <= 0) {
             printf("skill issue :[, goodbye\n");
             return 0;
