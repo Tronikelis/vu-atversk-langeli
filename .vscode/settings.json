@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "utils.h": "c"
+        "utils.h": "c",
+        "hidden-char.h": "c"
     },
     "C_Cpp.default.compilerPath": "cl.exe"
 }

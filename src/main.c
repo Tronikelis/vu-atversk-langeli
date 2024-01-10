@@ -4,43 +4,30 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "game.h"
 #include "hidden-char.h"
+#include "saving.h"
 #include "utils.h"
 
-enum State { FIRST_PICK, SECOND_PICK };
-
-typedef struct Game {
-    struct HiddenChar* characters;
-
-    enum State state;
-    int tries_left;
-};
-
-int game_loop(struct HiddenChar* characters, int character_len,
-              int tries_left) {
-    struct Game game;
-
-    game.state = FIRST_PICK;
-    game.tries_left = tries_left;
-    game.characters = characters;
-
+int game_loop(struct Game game) {
     int first_pick = -1;
     int second_pick = -1;
 
     while (true) {
         clear_terminal();
+        saveGameState(game);
 
         if (game.tries_left <= 0) {
             printf("skill issue :[, goodbye\n");
             return 0;
         }
 
-        if (HiddenChar_all_picked(game.characters, character_len)) {
+        if (HiddenChar_all_picked(game.characters, game.character_len)) {
             printf("ure built different ;], goodbye\n");
             return 0;
         }
 
-        for (int i = 0; i < character_len; i++) {
+        for (int i = 0; i < game.character_len; i++) {
             HiddenChar_print_box(game.characters[i], i);
         }
 
@@ -67,7 +54,7 @@ int game_loop(struct HiddenChar* characters, int character_len,
             }
 
             scanf("%i", &first_pick);
-            first_pick = clamp_int(first_pick, 0, character_len - 1);
+            first_pick = clamp_int(first_pick, 0, game.character_len - 1);
 
             game.state = SECOND_PICK;
             game.characters[first_pick].picked = true;
@@ -77,7 +64,7 @@ int game_loop(struct HiddenChar* characters, int character_len,
 
         if (game.state == SECOND_PICK) {
             scanf("%i", &second_pick);
-            second_pick = clamp_int(second_pick, 0, character_len - 1);
+            second_pick = clamp_int(second_pick, 0, game.character_len - 1);
 
             game.state = FIRST_PICK;
             game.characters[second_pick].picked = true;
@@ -97,13 +84,13 @@ int main() {
                         'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                         's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
-    char filename[100];
+    char settingsFileName[100];
     printf("File name to read: ");
-    scanf("%s", filename);
+    scanf("%s", settingsFileName);
 
-    FILE* file = fopen(filename, "r");
+    FILE* settingsFile = fopen(settingsFileName, "r");
 
-    if (file == NULL) {
+    if (settingsFile == NULL) {
         printf("Error opening file.\n");
         return 1;
     }
@@ -111,13 +98,13 @@ int main() {
     int HOW_MANY_CHARACTERS;
     int TRIES_LEFT;
 
-    if (fscanf(file, "%d %d", &HOW_MANY_CHARACTERS, &TRIES_LEFT) != 2) {
+    if (fscanf(settingsFile, "%d %d", &HOW_MANY_CHARACTERS, &TRIES_LEFT) != 2) {
         printf("Error reading the value from file.\n");
-        fclose(file);
+        fclose(settingsFile);
         return 1;
     }
 
-    fclose(file);
+    fclose(settingsFile);
 
     // Print the read values for verification
     printf("Read HOW_MANY_CHARACTERS: %d\n", HOW_MANY_CHARACTERS);
@@ -140,7 +127,23 @@ int main() {
 
     HiddenChar_shuffle_arr(hidden_char_arr, arr_length);
 
-    int exit_code = game_loop(hidden_char_arr, arr_length, TRIES_LEFT);
+    struct Game game;
+
+    game.state = FIRST_PICK;
+    game.tries_left = TRIES_LEFT;
+    game.characters = hidden_char_arr;
+    game.character_len = arr_length;
+
+    char CONTINUE_FROM_PREV;
+
+    printf("continue from previous run? [y/n]\n");
+    scanf("%s", &CONTINUE_FROM_PREV);
+
+    if (CONTINUE_FROM_PREV == 121) {
+        readGameState(&game);
+    }
+
+    int exit_code = game_loop(game);
     free(hidden_char_arr);
 
     return exit_code;
