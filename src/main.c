@@ -10,9 +10,6 @@
 #include "utils.h"
 
 int game_loop(struct Game game) {
-    int first_pick = -1;
-    int second_pick = -1;
-
     while (true) {
         clear_terminal();
         saveGameState(game);
@@ -45,29 +42,33 @@ int game_loop(struct Game game) {
         if (game.state == FIRST_PICK) {
             // when both are picked, let the player check his results until the
             // first pick again
-            if (first_pick != -1 && second_pick != -1) {
-                if (game.characters[first_pick].character !=
-                    game.characters[second_pick].character) {
-                    game.characters[first_pick].picked = false;
-                    game.characters[second_pick].picked = false;
+            if (game.first_pick != -1 && game.second_pick != -1) {
+                if (game.characters[game.first_pick].character !=
+                    game.characters[game.second_pick].character) {
+                    game.characters[game.first_pick].picked = false;
+                    game.characters[game.second_pick].picked = false;
                 }
             }
 
-            scanf("%i", &first_pick);
-            first_pick = clamp_int(first_pick, 0, game.character_len - 1);
+            scanf("%i", &game.first_pick);
+
+            game.first_pick =
+                clamp_int(game.first_pick, 0, game.character_len - 1);
 
             game.state = SECOND_PICK;
-            game.characters[first_pick].picked = true;
+            game.characters[game.first_pick].picked = true;
 
             continue;
         }
 
         if (game.state == SECOND_PICK) {
-            scanf("%i", &second_pick);
-            second_pick = clamp_int(second_pick, 0, game.character_len - 1);
+            scanf("%i", &game.second_pick);
+
+            game.second_pick =
+                clamp_int(game.second_pick, 0, game.character_len - 1);
 
             game.state = FIRST_PICK;
-            game.characters[second_pick].picked = true;
+            game.characters[game.second_pick].picked = true;
             game.tries_left--;
 
             continue;
@@ -134,6 +135,8 @@ int main() {
 
     struct Game game;
 
+    game.first_pick = -1;
+    game.second_pick = -1;
     game.state = FIRST_PICK;
     game.tries_left = TRIES_LEFT;
     game.characters = hidden_char_arr;

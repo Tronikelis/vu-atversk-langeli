@@ -6,4 +6,7 @@ typedef struct Game {
 
     enum State state;
     int tries_left;
+
+    int first_pick;
+    int second_pick;
 };
