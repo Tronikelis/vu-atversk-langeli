@@ -28,11 +28,11 @@ struct OpenedGameFiles openGameStateFiles(char* mode) {
 void saveGameState(struct Game game) {
     struct OpenedGameFiles files = openGameStateFiles("wb");
 
-    int WRITE_COUNT = 1 + game.character_len;
-
     int gameFileWrote = fwrite(&game, sizeof(struct Game), 1, files.gameFile);
     int charsFileWrote = fwrite(game.characters, sizeof(struct HiddenChar),
                                 game.character_len, files.charsFile);
+
+    int WRITE_COUNT = 1 + game.character_len;
 
     if (gameFileWrote + charsFileWrote != WRITE_COUNT) {
         printf("can't write to game saving files\n");
@@ -46,18 +46,18 @@ void saveGameState(struct Game game) {
     fclose(files.charsFile);
 }
 
-void readGameState(struct Game* game) {
+struct Game readGameState() {
     struct OpenedGameFiles files = openGameStateFiles("rb");
+    struct Game game;
 
-    int READ_COUNT = 1 + game->character_len;
+    int gameFileRead = fread(&game, sizeof(struct Game), 1, files.gameFile);
 
-    // this is the allocated pointer, saving it here because it gets overriden
-    // by next fread call
-    struct HiddenChar* characters = game->characters;
+    struct HiddenChar* characters = HiddenChar_create_arr(game.character_len);
 
-    int gameFileRead = fread(game, sizeof(struct Game), 1, files.gameFile);
     int charsFileRead = fread(characters, sizeof(struct HiddenChar),
-                              game->character_len, files.charsFile);
+                              game.character_len, files.charsFile);
+
+    int READ_COUNT = 1 + game.character_len;
 
     if (gameFileRead + charsFileRead != READ_COUNT) {
         printf("can't read game saving files\n");
@@ -67,8 +67,10 @@ void readGameState(struct Game* game) {
         exit(1);
     }
 
-    game->characters = characters;
+    game.characters = characters;
 
     fclose(files.gameFile);
     fclose(files.charsFile);
+
+    return game;
 }

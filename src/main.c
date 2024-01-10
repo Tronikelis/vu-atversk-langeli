@@ -17,6 +17,8 @@ int game_loop(struct Game game) {
         clear_terminal();
         saveGameState(game);
 
+        printf("%d", game.tries_left);
+
         if (game.tries_left <= 0) {
             printf("skill issue :[, goodbye\n");
             return 0;
@@ -84,8 +86,17 @@ int main() {
                         'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r',
                         's', 't', 'u', 'v', 'w', 'x', 'y', 'z'};
 
+    char CONTINUE_FROM_PREV;
+
+    printf("continue from previous run? [y/n]: ");
+    scanf("%c", &CONTINUE_FROM_PREV);
+
+    if (CONTINUE_FROM_PREV == 121) {
+        return game_loop(readGameState());
+    }
+
     char settingsFileName[100];
-    printf("File name to read: ");
+    printf("settings file to read: ");
     scanf("%s", settingsFileName);
 
     FILE* settingsFile = fopen(settingsFileName, "r");
@@ -105,10 +116,6 @@ int main() {
     }
 
     fclose(settingsFile);
-
-    // Print the read values for verification
-    printf("Read HOW_MANY_CHARACTERS: %d\n", HOW_MANY_CHARACTERS);
-    printf("Read TRIES_LEFT: %d\n", TRIES_LEFT);
 
     HOW_MANY_CHARACTERS = clamp_int(HOW_MANY_CHARACTERS, 2, 26);
     TRIES_LEFT = clamp_int(TRIES_LEFT, 1, INT_MAX);
@@ -134,17 +141,5 @@ int main() {
     game.characters = hidden_char_arr;
     game.character_len = arr_length;
 
-    char CONTINUE_FROM_PREV;
-
-    printf("continue from previous run? [y/n]\n");
-    scanf("%s", &CONTINUE_FROM_PREV);
-
-    if (CONTINUE_FROM_PREV == 121) {
-        readGameState(&game);
-    }
-
-    int exit_code = game_loop(game);
-    free(hidden_char_arr);
-
-    return exit_code;
+    return game_loop(game);
 }
