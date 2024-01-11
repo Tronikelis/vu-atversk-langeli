@@ -50,6 +50,7 @@ int game_loop(struct Game game) {
                 }
             }
 
+            saveGameState(game);
             scanf("%i", &game.first_pick);
 
             game.first_pick =
@@ -58,6 +59,7 @@ int game_loop(struct Game game) {
             game.state = SECOND_PICK;
             game.characters[game.first_pick].picked = true;
 
+            saveGameState(game);
             continue;
         }
 
@@ -71,6 +73,7 @@ int game_loop(struct Game game) {
             game.characters[game.second_pick].picked = true;
             game.tries_left--;
 
+            saveGameState(game);
             continue;
         }
     }
