@@ -13,3 +13,12 @@ int clamp_int(int target, int left, int right) {
     }
     return target;
 }
+
+void getIntStdin(int* target) {
+    while (scanf("%i", target) == 0) {
+        printf("enter an integer\n");
+
+        while (getchar() != '\n') {
+        }
+    }
+}

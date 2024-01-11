@@ -9,11 +9,6 @@
 #include "saving.h"
 #include "utils.h"
 
-void clearInputBuffer() {
-    while (getchar() != '\n') {
-    }
-}
-
 int game_loop(struct Game game) {
     while (true) {
         clear_terminal();
@@ -56,10 +51,7 @@ int game_loop(struct Game game) {
             }
 
             saveGameState(game);
-            while (scanf("%i", &game.first_pick) == 0) {
-                printf("enter a number\n");
-                clearInputBuffer();
-            }
+            getIntStdin(&game.first_pick);
 
             game.first_pick =
                 clamp_int(game.first_pick, 0, game.character_len - 1);
@@ -72,10 +64,7 @@ int game_loop(struct Game game) {
         }
 
         if (game.state == SECOND_PICK) {
-            while (scanf("%i", &game.second_pick) == 0) {
-                printf("enter number\n");
-                clearInputBuffer();
-            }
+            getIntStdin(&game.second_pick);
 
             game.second_pick =
                 clamp_int(game.second_pick, 0, game.character_len - 1);
